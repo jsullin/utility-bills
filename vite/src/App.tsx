@@ -13,6 +13,8 @@ interface Bill {
 
 function App() {
   const [bills, setBills] = useState<Bill[]>([]);
+  const [search, setSearch] = useState('');
+  const [typeFilter, setTypeFilter] = useState('All');
 
   useEffect(() => {
     fetch('http://localhost:3001/api/get_all_bills')
@@ -21,12 +23,28 @@ function App() {
       .catch(error => console.error('Error fetching bills:', error));
   }, []);
 
+  const filteredBills = bills.filter(bill =>
+    bill.name.toLowerCase().includes(search.toLowerCase()) &&
+    (typeFilter == 'All' || bill.type === typeFilter));
+
   return (
     <div>
         <header> 
           <h1>Utility Billing Automation</h1>
           <h2>Utility Bills</h2>
         </header>
+        <input
+          type="text"
+          placeholder="Search by company..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+        <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)}>
+          <option>All</option>
+          <option>Electric</option>
+          <option>Gas</option>
+          <option>Electric</option>
+        </select>
         <main>
           <table>
             <thead>
@@ -39,7 +57,7 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              {bills.map(bill => (
+              {filteredBills.map(bill => (
                 <tr key={bill.bill_guid}>
                   <td>{bill.year}</td>
                   <td>{bill.month}</td>
