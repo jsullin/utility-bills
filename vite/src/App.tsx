@@ -43,7 +43,11 @@ function App() {
           <option>All</option>
           <option>Electric</option>
           <option>Gas</option>
-          <option>Electric</option>
+          <option>Water</option>
+          <option>Internet</option>
+          <option>Sewer</option>
+          <option>Car Insurance</option>
+          <option>Mortgage</option>
         </select>
         <main>
           <table>
