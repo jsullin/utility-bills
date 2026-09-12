@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
+import { Routes, Route, Link } from 'react-router-dom';
 import './App.css'
+import AddBill from './Pages/AddBill';
 
 interface Bill {
   bill_guid: string;
@@ -11,7 +13,7 @@ interface Bill {
   url: string;
 }
 
-function App() {
+function BillsTable() {
   // Company Search Filter Variables
   const [bills, setBills] = useState<Bill[]>([]);
   const [search, setSearch] = useState('');
@@ -28,9 +30,6 @@ function App() {
   const uniqueTypes = [...new Set(bills.map(bill => bill.type))].sort();
   const [typeFilter, setTypeFilter] = useState('All');
 
-  // Amount Filter Variables
-  const uniqueAmounts = [...new Set(bills.map(bill => bill.amount))].sort();
-  const [amountFilter, setAmountFilter] = useState('All');
 
   // Clear Filters Variable
   const clearFilters = () => {
@@ -38,7 +37,6 @@ function App() {
     setYearFilter('All');
     setMonthFilter('All');
     setTypeFilter('All');
-    setAmountFilter('All');
   };
 
   useEffect(() => {
@@ -52,8 +50,7 @@ function App() {
     bill.name.toLowerCase().includes(search.toLowerCase()) &&
     (yearFilter === 'All' || bill.year === Number(yearFilter)) &&
     (monthFilter === 'All' || bill.month === Number(monthFilter)) &&
-    (typeFilter === 'All' || bill.type === typeFilter) &&
-    (amountFilter === 'All' || bill.amount === Number(amountFilter))
+    (typeFilter === 'All' || bill.type === typeFilter)
   );
 
   return (
@@ -132,4 +129,21 @@ function App() {
   )
 }
 
-export default App
+function App() {
+  return (
+    <div>
+      <nav>
+        <Link to="/">Bills</Link>
+        {' | '}
+        <Link to="/add-bill">Add Bill</Link>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<BillsTable />} />
+        <Route path="/add-bill" element={<AddBill />} />
+      </Routes>
+    </div>
+  );
+}
+
+export default App;
