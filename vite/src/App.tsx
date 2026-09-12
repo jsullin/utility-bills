@@ -12,7 +12,7 @@ interface Bill {
 }
 
 function App() {
-  // Comapny Search Filter Variables
+  // Company Search Filter Variables
   const [bills, setBills] = useState<Bill[]>([]);
   const [search, setSearch] = useState('');
 
@@ -28,7 +28,7 @@ function App() {
   const uniqueTypes = [...new Set(bills.map(bill => bill.type))].sort();
   const [typeFilter, setTypeFilter] = useState('All');
 
-  // Ammount Filter Variables
+  // Amount Filter Variables
   const uniqueAmounts = [...new Set(bills.map(bill => bill.amount))].sort();
   const [amountFilter, setAmountFilter] = useState('All');
 
@@ -58,75 +58,76 @@ function App() {
 
   return (
     <div>
-        <header> 
-          <h1>Utility Billing Automation</h1>
-          <h2>Utility Bills</h2>
-        </header>
+      <header>
+        <h1>Utility Billing Automation</h1>
+        <h2>Utility Bills</h2>
+      </header>
 
-        <main>
-          <table>
-            <thead>
-              <tr>
-                <th>
-                  Year<br />
-                  {/* Year Filter */}
-                  <select value={yearFilter} onChange={e => setYearFilter(e.target.value)}>
-                    <option>All</option>
-                    {uniqueYears.map(year => (
-                      <option key={year}>{year}</option>
-                    ))}
-                  </select>
-                </th>
-                <th>
-                  Month<br />
-                  {/* Month Filter */}
-                  <select value={monthFilter} onChange={e => setMonthFilter(e.target.value)}>
-                    <option>All</option>
-                    {uniqueMonths.map(month => (
-                      <option key={month}>{month}</option>
-                    ))}
-                  </select>
-                </th>
-                <th>
-                  Company<br />
-                  {/* Company Search Filter */}
-                  <input
-                    type="text"
-                    placeholder="Search by company..."
-                    value={search}
-                    onChange={e => setSearch(e.target.value)}
-                  />
-                </th>
-                <th>
-                  Type<br />
-                  {/* Bill Type Filter */}
-                  <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)}>
-                    <option>All</option>
-                    {uniqueTypes.map(type => (
-                      <option key={type}>{type}</option>
-                    ))}
-                  </select>
-                </th>
-                <th>
-                  Amount<br />
-                  {/* Clear Filters */}
-                  <button onClick={clearFilters}>Clear Filters</button>
-                </th>
+      <main>
+        <table>
+          <thead>
+            {/* Row 1: column labels only */}
+            <tr className="label-row">
+              <th><span className="col-label">Year</span></th>
+              <th><span className="col-label">Month</span></th>
+              <th><span className="col-label">Company</span></th>
+              <th><span className="col-label">Type</span></th>
+              <th><span className="col-label">Amount</span></th>
+            </tr>
+
+            {/* Row 2: filter controls only */}
+            <tr className="filter-row">
+              <th>
+                <select value={yearFilter} onChange={e => setYearFilter(e.target.value)}>
+                  <option>All</option>
+                  {uniqueYears.map(year => (
+                    <option key={year}>{year}</option>
+                  ))}
+                </select>
+              </th>
+              <th>
+                <select value={monthFilter} onChange={e => setMonthFilter(e.target.value)}>
+                  <option>All</option>
+                  {uniqueMonths.map(month => (
+                    <option key={month}>{month}</option>
+                  ))}
+                </select>
+              </th>
+              <th>
+                <input
+                  type="text"
+                  placeholder="Search by company..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                />
+              </th>
+              <th>
+                <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)}>
+                  <option>All</option>
+                  {uniqueTypes.map(type => (
+                    <option key={type}>{type}</option>
+                  ))}
+                </select>
+              </th>
+              <th>
+                <button onClick={clearFilters}>Clear Filters</button>
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {filteredBills.map(bill => (
+              <tr key={bill.bill_guid}>
+                <td>{bill.year}</td>
+                <td>{bill.month}</td>
+                <td>{bill.name}</td>
+                <td>{bill.type}</td>
+                <td>{bill.amount}</td>
               </tr>
-            </thead>
-            <tbody>
-              {filteredBills.map(bill => (
-                <tr key={bill.bill_guid}>
-                  <td>{bill.year}</td>
-                  <td>{bill.month}</td>
-                  <td>{bill.name}</td>
-                  <td>{bill.type}</td>
-                  <td>{bill.amount}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </main>
+            ))}
+          </tbody>
+        </table>
+      </main>
     </div>
   )
 }
