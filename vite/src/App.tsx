@@ -1,8 +1,8 @@
 
 import { Routes, Route, Link } from 'react-router-dom';
 import './App.css'
-import AddBill from './Pages/AddBill';
 import BillsTable from './Pages/BillsTable';
+import Portals from './Pages/Portals';
 
 
 
@@ -12,12 +12,12 @@ function App() {
       <nav>
         <Link to="/">Bills</Link>
         {' | '}
-        <Link to="/add-bill">Add Bill</Link>
+        <Link to="/portals">Portals</Link>
       </nav>
 
       <Routes>
         <Route path="/" element={<BillsTable />} />
-        <Route path="/add-bill" element={<AddBill />} />
+        <Route path="/portals" element={<Portals />} />
 
       </Routes>
     </div>
