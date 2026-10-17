@@ -57,6 +57,20 @@ function requireStringFields(fields: string[]) {
   };
 }
 
+function requireFields(fields: string[]) {
+  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    for (const field of fields) {
+      const value = req.body[field];
+      const isMissing = value === undefined || value === null || (typeof value === 'string' && value.trim() === '');
+      if (isMissing) {
+        return res.status(400).json({ error: `Missing or invalid field: ${field}` });
+      }
+    }
+    next();
+  };
+}
+
+
 app.patch('/api/update_portal/:id', requireStringFields(['type', 'name', 'url']), (req, res) => {
   const { id } = req.params;
   const { type, name, url } = req.body;
@@ -66,6 +80,17 @@ app.patch('/api/update_portal/:id', requireStringFields(['type', 'name', 'url'])
     SET type = ?, name = ?, url = ?
     WHERE company_guid = ?
   `).run(type, name, url, id);
+
+  res.json({ success: true });
+});
+
+app.post('/api/add_bill', requireFields(['year', 'month', 'company_guid', 'amount']), (req, res) => {
+  const { year, month, company_guid, amount } = req.body;
+
+  db.prepare(`
+    INSERT INTO bills (year, month, company_guid, amount)
+    VALUES (?, ?, ?, ?)
+  `).run(year, month, company_guid, amount);
 
   res.json({ success: true });
 });
