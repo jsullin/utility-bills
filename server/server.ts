@@ -95,5 +95,16 @@ app.post('/api/add_bill', requireFields(['year', 'month', 'company_guid', 'amoun
   res.json({ success: true });
 });
 
+app.post('/api/add_portal', requireFields(['type', 'name', 'url']), (req, res) => {
+  const { type, name, url } = req.body
+
+  db.prepare(`
+    INSERT INTO utility_companies (type, name, url)
+    VALUES (?, ?, ?)
+  `).run(type, name, url)
+
+  res.json({ success: true });
+});
+
 
 app.listen(3001, () => console.log('Server running on port 3001'));

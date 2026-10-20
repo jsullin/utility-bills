@@ -11,6 +11,33 @@ function Portals() {
   const [portals, setPortals] = useState<Portal[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
 
+  // Show add Portal Modal
+  const [showAddPortalModal, setShowAddPortalModal] = useState(false)
+
+  // New Portal Object
+  const [newPortal, setNewPortal] = useState({
+    type: '',
+    name: '',
+    url: '',
+  })
+
+  // Submit new portal function
+  const handlePortal = async () => {
+    const response = await fetch('http://localhost:3001/api/add_portal', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newPortal)
+    })
+
+    if (response.ok) {
+      // Refresh the portal list
+      const data = await fetch('http://localhost:3001/api/get_all_portals')
+        .then(r => r.json());
+      setPortals(data);
+      setShowAddPortalModal(false)
+    }
+  }
+
   useEffect(() => {
     fetch('http://localhost:3001/api/get_all_portals')
       .then(response => response.json())
@@ -39,6 +66,7 @@ function Portals() {
       <header>
         <h1>Utility Billing Automation</h1>
         <h2>Utility Bills</h2>
+        <button onClick={() => setShowAddPortalModal(true)}>Add Portal</button>
       </header>
 
       <main>
@@ -82,6 +110,38 @@ function Portals() {
             })}
           </tbody>
         </table>
+        {showAddPortalModal && (
+          <div className="modal-overlay">
+            <div className="modal-content" onClick={e => e.stopPropagation()}>
+                <h3>Add New Portal</h3>
+                <h5 style={{margin: 0}}>Type</h5>
+
+                <select
+                  value={newPortal.type}
+                  onChange={(e => setNewPortal({ ...newPortal, type: e.target.value }))}
+                >
+                  <option value="">Select Bill Type</option>
+                  <option value="Car Insurance">Car Insurance</option>
+                  <option value="Electric">Electric</option>
+                  <option value="Gas">Gas</option>
+                  <option value="Internet">Internet</option>
+                  <option value="Mortgage">Mortgage</option>
+                  <option value="Sewer">Sewer</option>
+
+                </select>
+
+                <h5 style={{margin: 0}}>Company</h5>
+                <input type="string" placeholder="Company Name" value={newPortal.name}
+                  onChange={e => setNewPortal({ ...newPortal, name: e.target.value })} />
+
+                <h5 style={{margin: 0}}>URL</h5>
+                <input type="string" placeholder="URL" value={newPortal.url}
+                  onChange={e => setNewPortal({ ...newPortal, url: e.target.value })} />
+                
+                <button onClick={handlePortal}>Save</button>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   )
