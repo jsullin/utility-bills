@@ -61,6 +61,20 @@ function Portals() {
       .catch(error => console.error('Error saving:', error));
   }
 
+  // Delete Bill Function
+  const deletePortal = async (company_guid: string) => {
+    if (!window.confirm('Delete this portal?')) return;
+
+    const response = await fetch(`http://localhost:3001/api/delete_portal/${company_guid}`, {
+      method: 'DELETE'
+    })
+
+    if (response.ok) {
+      // Remove bill from the list without reloading everything
+      setPortals(portals.filter(portal => portal.company_guid !== company_guid));
+    }
+  }
+
   return (
     <div>
       <header>
@@ -102,7 +116,10 @@ function Portals() {
                   </td>
                   <td>
                    {isEditing
-                      ? <button onClick={() => saveRow(portal)}>Save</button>
+                      ? <>
+                        <button onClick={() => saveRow(portal)}>Save</button>
+                        <button onClick={() => deletePortal(portal.company_guid)}>Delete</button>
+                      </>
                       : <button onClick={() => setEditingId(portal.company_guid)}>Edit</button>}
                   </td>
                 </tr>

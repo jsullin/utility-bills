@@ -106,5 +106,20 @@ app.post('/api/add_portal', requireFields(['type', 'name', 'url']), (req, res) =
   res.json({ success: true });
 });
 
+app.delete('/api/delete_portal/:id', (req, res) => {
+  const { id } = req.params;
+
+  const result = db.prepare(`
+      DELETE FROM utility_companies
+      WHERE company_guid = ?
+    `).run(id);
+
+  if (result.changes === 0) {
+    return res.status(404).json({ error: 'Portal not found'})
+  }
+
+  res.json({ success: true });
+});
+
 
 app.listen(3001, () => console.log('Server running on port 3001'));
