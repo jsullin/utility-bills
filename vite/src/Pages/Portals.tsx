@@ -80,7 +80,7 @@ function Portals() {
       <header>
         <h1>Utility Billing Automation</h1>
         <h2>Utility Bills</h2>
-        <button onClick={() => setShowAddPortalModal(true)}>Add Portal</button>
+        <button onClick={() => setShowAddPortalModal(true)} style={{marginBottom: '10px'}}>Add Portal</button>
       </header>
 
       <main>
@@ -156,6 +156,7 @@ function Portals() {
                   onChange={e => setNewPortal({ ...newPortal, url: e.target.value })} />
                 
                 <button onClick={handlePortal}>Save</button>
+                <button onClick={() => setShowAddPortalModal(false)}>Cancel</button>
             </div>
           </div>
         )}

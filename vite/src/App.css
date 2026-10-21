@@ -5,9 +5,36 @@ body {
   color: #1a1a1a;
 }
 
-div {
-  margin: 0 auto;
-  padding: 2rem 1rem;
+
+
+
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 2rem;
+  background: rgb(42, 123, 230);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  transition: background-color 0.15s;
+}
+
+nav a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+nav a.active {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 header h1 {
@@ -33,6 +60,7 @@ select {
 
 button {
   padding: 0.5rem 1rem;
+  margin: 5px;
   border: none;
   border-radius: 6px;
   background-color: #2563eb;
@@ -67,12 +95,12 @@ th {
 }
 
 .label-row th {
-  background-color: #fafafa;
+  background-color: #dbdbdb;
   font-weight: 600;
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: #555;
+  color: #070707;
 }
 
 .filter-row th {
@@ -110,4 +138,9 @@ tbody tr:nth-child(even) {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.page {
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
 }

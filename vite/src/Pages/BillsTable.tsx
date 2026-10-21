@@ -101,7 +101,7 @@ function BillsTable() {
       <header>
         <h1>Utility Billing Automation</h1>
         <h2>Utility Bills</h2>
-        <button onClick={() => setShowAddBillModal(true)}>Add Bill</button>
+        <button onClick={() => setShowAddBillModal(true)} style={{marginBottom: '10px'}}>Add Bill</button>
       </header>
 
       <main>
