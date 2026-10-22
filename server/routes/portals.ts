@@ -4,7 +4,7 @@ import {requireStringFields, requireFields} from '../middleware/authorization'
 
 const router = express.Router()
 
-router.get('/api/get_all_portals', (req, res) => {
+router.get('/get_all_portals', (req, res) => {
   const portals = db.prepare(`
     SELECT
     company_guid,
@@ -21,7 +21,7 @@ router.get('/api/get_all_portals', (req, res) => {
 
 
 
-router.patch('/api/update_portal/:id', requireStringFields(['type', 'name', 'url']), (req, res) => {
+router.patch('/update_portal/:id', requireStringFields(['type', 'name', 'url']), (req, res) => {
   const { id } = req.params;
   const { type, name, url } = req.body;
 
@@ -37,7 +37,7 @@ router.patch('/api/update_portal/:id', requireStringFields(['type', 'name', 'url
 
 
 // Add Portal
-router.post('/api/add_portal', requireFields(['type', 'name', 'url']), (req, res) => {
+router.post('/add_portal', requireFields(['type', 'name', 'url']), (req, res) => {
   const { type, name, url } = req.body
 
   db.prepare(`
@@ -49,7 +49,7 @@ router.post('/api/add_portal', requireFields(['type', 'name', 'url']), (req, res
 });
 
 // Delete Portal
-router.delete('/api/delete_portal/:id', (req, res) => {
+router.delete('/delete_portal/:id', (req, res) => {
   const { id } = req.params;
 
   const result = db.prepare(`
@@ -63,3 +63,5 @@ router.delete('/api/delete_portal/:id', (req, res) => {
 
   res.json({ success: true });
 });
+
+export default router;

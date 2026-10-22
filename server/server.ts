@@ -1,6 +1,8 @@
 import express from 'express';
-import Database from 'better-sqlite3';
 import cors from 'cors';
+
+import bill_routes from './routes/bills'
+import portal_routes from './routes/portals'
 
 const app = express();
 
@@ -9,117 +11,7 @@ app.use(cors({ origin: 'http://localhost:5173' })); // update to match your Vite
 
 app.use(express.json());
 
-const db = new Database('../data/utility_bills.db');
-
-app.get('/api/get_all_bills', (req, res) => {
-  const bills = db.prepare(`
-    SELECT
-    a.bill_guid,
-    a.year,
-    a.month,
-    a.amount,
-    b.type,
-    b.name,
-    b.url
-	
-    FROM bills a
-    LEFT JOIN utility_companies b
-    ON a.company_guid = b.company_guid
-    ORDER BY a.year desc, a.month desc, type asc
-
-    `).all();
-  res.json(bills);
-});
-
-app.get('/api/get_all_portals', (req, res) => {
-  const portals = db.prepare(`
-    SELECT
-    company_guid,
-    type,
-    name,
-    url
-    FROM utility_companies
-    ORDER BY type asc
-
-    `).all();
-  res.json(portals);
-});
-
-// Reusable validation helper — pass the field names that must be present, non-empty strings
-function requireStringFields(fields: string[]) {
-  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    for (const field of fields) {
-      if (typeof req.body[field] !== 'string' || req.body[field].trim() === '') {
-        return res.status(400).json({ error: `Missing or invalid field: ${field}` });
-      }
-    }
-    next();
-  };
-}
-
-function requireFields(fields: string[]) {
-  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    for (const field of fields) {
-      const value = req.body[field];
-      const isMissing = value === undefined || value === null || (typeof value === 'string' && value.trim() === '');
-      if (isMissing) {
-        return res.status(400).json({ error: `Missing or invalid field: ${field}` });
-      }
-    }
-    next();
-  };
-}
-
-
-app.patch('/api/update_portal/:id', requireStringFields(['type', 'name', 'url']), (req, res) => {
-  const { id } = req.params;
-  const { type, name, url } = req.body;
-
-  db.prepare(`
-    UPDATE utility_companies
-    SET type = ?, name = ?, url = ?
-    WHERE company_guid = ?
-  `).run(type, name, url, id);
-
-  res.json({ success: true });
-});
-
-app.post('/api/add_bill', requireFields(['year', 'month', 'company_guid', 'amount']), (req, res) => {
-  const { year, month, company_guid, amount } = req.body;
-
-  db.prepare(`
-    INSERT INTO bills (year, month, company_guid, amount)
-    VALUES (?, ?, ?, ?)
-  `).run(year, month, company_guid, amount);
-
-  res.json({ success: true });
-});
-
-app.post('/api/add_portal', requireFields(['type', 'name', 'url']), (req, res) => {
-  const { type, name, url } = req.body
-
-  db.prepare(`
-    INSERT INTO utility_companies (type, name, url)
-    VALUES (?, ?, ?)
-  `).run(type, name, url)
-
-  res.json({ success: true });
-});
-
-app.delete('/api/delete_portal/:id', (req, res) => {
-  const { id } = req.params;
-
-  const result = db.prepare(`
-      DELETE FROM utility_companies
-      WHERE company_guid = ?
-    `).run(id);
-
-  if (result.changes === 0) {
-    return res.status(404).json({ error: 'Portal not found'})
-  }
-
-  res.json({ success: true });
-});
+app.use('/api/', bill_routes, portal_routes)
 
 
 app.listen(3001, () => console.log('Server running on port 3001'));

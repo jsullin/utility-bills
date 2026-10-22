@@ -77,6 +77,20 @@ function BillsTable() {
     }
   };
 
+  // Delete Function
+  const deleteBill = async (bill_guid: string) => {
+
+    if(!window.confirm('Delete this bill?')) return
+
+    const response = await fetch(`http://localhost:3001/api/delete_bill/${bill_guid}`, {
+      method: 'DELETE'
+    })
+
+    if (response.ok) {
+      setBills(bills.filter(bill => bill.bill_guid != bill_guid))
+    }
+  }
+
   useEffect(() => {
     fetch('http://localhost:3001/api/get_all_bills')
       .then(response => response.json())
@@ -114,6 +128,7 @@ function BillsTable() {
               <th><span className="col-label">Company</span></th>
               <th><span className="col-label">Type</span></th>
               <th><span className="col-label">Amount</span></th>
+              <th></th>
             </tr>
 
             {/* Row 2: filter controls only */}
@@ -164,6 +179,7 @@ function BillsTable() {
                 <td>{bill.name}</td>
                 <td>{bill.type}</td>
                 <td>{bill.amount}</td>
+                <td><button onClick={() => deleteBill(bill.bill_guid)}>Delete</button></td>
               </tr>
             ))}
           </tbody>
