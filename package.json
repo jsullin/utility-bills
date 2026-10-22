@@ -1,5 +1,9 @@
 {
   "dependencies": {
+    "concurrently": "^10.0.6",
     "react-router-dom": "^7.18.3"
+  },
+  "scripts": {
+    "dev": "concurrently -n server,vite \"npm run dev --prefix server\" \"npm run dev --prefix vite\""
   }
 }
